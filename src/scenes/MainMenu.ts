@@ -16,7 +16,9 @@ export class MainMenu extends Container {
   }
 
   private async init() {
-    const texture = await Assets.load('/assets/backgrounds/menu-background.jpg')
+    const texture = await Assets.load(
+      './assets/backgrounds/menu-background.jpg'
+    )
     this.background = new Sprite(texture)
     this.background.anchor.set(0.5)
     this.addChild(this.background)

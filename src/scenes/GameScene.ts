@@ -42,7 +42,7 @@ export class GameScene extends Container {
   }
 
   private async init() {
-    const texture = await Assets.load('/assets/backgrounds/background.jpg')
+    const texture = await Assets.load('./assets/backgrounds/background.jpg')
     this.background = new Sprite(texture)
     this.background.anchor.set(0.5)
     this.background.eventMode = 'static'
@@ -110,7 +110,7 @@ export class GameScene extends Container {
   }
 
   private async initCursor() {
-    const cursorTexture = await Assets.load('/assets/icons/cursor.png')
+    const cursorTexture = await Assets.load('./assets/icons/cursor.png')
     this.customCursor = new Sprite(cursorTexture)
     this.customCursor.anchor.set(0.5)
     this.customCursor.scale.set(0.5)
@@ -124,7 +124,7 @@ export class GameScene extends Container {
   }
 
   private async initPauseControls() {
-    const pauseTexture = await Assets.load('/assets/buttons/pause-btn.png')
+    const pauseTexture = await Assets.load('./assets/buttons/pause-btn.png')
     this.pauseButton = new Sprite(pauseTexture)
     this.pauseButton.anchor.set(0.5)
     this.pauseButton.scale.set(0.5)
@@ -145,7 +145,7 @@ export class GameScene extends Container {
     })
     this.addChild(this.pauseButton)
 
-    const playTexture = await Assets.load('/assets/buttons/play-btn.png')
+    const playTexture = await Assets.load('./assets/buttons/play-btn.png')
     this.playButton = new Sprite(playTexture)
     this.playButton.anchor.set(0.5)
     this.playButton.scale.set(0.5)
@@ -160,8 +160,8 @@ export class GameScene extends Container {
     })
     this.addChild(this.playButton)
 
-    const soundOnTexture = await Assets.load('/assets/buttons/sound-on.png')
-    const soundOffTexture = await Assets.load('/assets/buttons/sound-off.png')
+    const soundOnTexture = await Assets.load('./assets/buttons/sound-on.png')
+    const soundOffTexture = await Assets.load('./assets/buttons/sound-off.png')
 
     this.soundButton = new Sprite(soundOnTexture)
     this.soundButton.anchor.set(0.5)
@@ -198,9 +198,11 @@ export class GameScene extends Container {
     this.pauseText.visible = false
     this.addChild(this.pauseText)
 
-    const boosterOnTexture = await Assets.load('/assets/buttons/booster-on.png')
+    const boosterOnTexture = await Assets.load(
+      './assets/buttons/booster-on.png'
+    )
     const boosterOffTexture = await Assets.load(
-      '/assets/buttons/booster-off.png'
+      './assets/buttons/booster-off.png'
     )
 
     this.boosterButton = new Sprite(boosterOnTexture)
@@ -293,7 +295,9 @@ export class GameScene extends Container {
       const onEnemyKilled = () => {
         if (this.isPaused) return
         this.killCount += scoreValue
-        this.killsText.text = `Score: ${this.killCount}`
+        if (this.killsText) {
+          this.killsText.text = `Score: ${this.killCount}`
+        }
         this.showFloatingText(`+${scoreValue}`, enemy.x, enemy.y)
       }
       enemy.once('pointerdown', onEnemyKilled)
@@ -358,7 +362,7 @@ export class GameScene extends Container {
   }
 
   private showLevelEnd() {
-    let starsImage = '/assets/icons/0stars.png'
+    let starsImage = './assets/icons/0stars.png'
     const stars = this.getStars()
     // Play appropriate sound before showing popup
     if (stars > 0) {
@@ -366,9 +370,9 @@ export class GameScene extends Container {
     } else {
       SoundManager.play('game_lose')
     }
-    if (stars === 1) starsImage = '/assets/icons/1stars.png'
-    else if (stars === 2) starsImage = '/assets/icons/2stars.png'
-    else if (stars === 3) starsImage = '/assets/icons/3stars.png'
+    if (stars === 1) starsImage = './assets/icons/1stars.png'
+    else if (stars === 2) starsImage = './assets/icons/2stars.png'
+    else if (stars === 3) starsImage = './assets/icons/3stars.png'
     this.addChild(
       new LevelEndPopup(
         this.killCount,
@@ -392,12 +396,15 @@ export class GameScene extends Container {
   }
 
   private showFloatingText(text: string, x: number, y: number) {
-    const scoreText = new Text(text, {
-      fontFamily: 'Arial',
-      fontSize: 32,
-      fill: '#ffff00',
-      fontWeight: 'bold',
-      stroke: { color: '#000000', width: 3 }
+    const scoreText = new Text({
+      text,
+      style: {
+        fontFamily: 'Arial',
+        fontSize: 32,
+        fill: '#ffff00',
+        fontWeight: 'bold',
+        stroke: { color: '#000000', width: 3 }
+      }
     })
     scoreText.anchor.set(0.5)
     scoreText.x = x

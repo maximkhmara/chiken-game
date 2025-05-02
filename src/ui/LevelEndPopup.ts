@@ -21,6 +21,8 @@ export class LevelEndPopup extends Container {
       onMenu,
       levelId
     )
+    // Ensure the cursor is set to default when popup opens
+    document.body.style.cursor = 'default'
   }
 
   private async init(
@@ -102,36 +104,45 @@ export class LevelEndPopup extends Container {
     starSprite.y = popup.y + popupHeight / 2
     this.addChild(starSprite)
 
-    const restartTexture = await Assets.load('/assets/buttons/restart-btn.png')
+    const restartTexture = await Assets.load('./assets/buttons/restart-btn.png')
     const retryBtn = new Sprite(restartTexture)
     retryBtn.anchor.set(0.5)
     retryBtn.x = screenWidth / 2 - 170
     retryBtn.y = popup.y + popupHeight - 100
     retryBtn.eventMode = 'static'
     retryBtn.cursor = 'pointer'
-    retryBtn.on('pointerdown', onRestart)
+    retryBtn.on('pointerdown', () => {
+      document.body.style.cursor = 'url(./assets/icons/cursor.png), auto'
+      onRestart()
+    })
     this.addChild(retryBtn)
 
     if (!isLastLevel) {
-      const nextTexture = await Assets.load('/assets/buttons/next-btn.png')
+      const nextTexture = await Assets.load('./assets/buttons/next-btn.png')
       const nextBtn = new Sprite(nextTexture)
       nextBtn.anchor.set(0.5)
       nextBtn.x = screenWidth / 2 + 170
       nextBtn.y = popup.y + popupHeight - 100
       nextBtn.eventMode = 'static'
       nextBtn.cursor = 'pointer'
-      nextBtn.on('pointerdown', onNextLevel)
+      nextBtn.on('pointerdown', () => {
+        document.body.style.cursor = 'url(./assets/icons/cursor.png), auto'
+        onNextLevel()
+      })
       this.addChild(nextBtn)
     }
 
-    const menuTexture = await Assets.load('/assets/buttons/menu-btn.png')
+    const menuTexture = await Assets.load('./assets/buttons/menu-btn.png')
     const menuBtn = new Sprite(menuTexture)
     menuBtn.anchor.set(0.5)
     menuBtn.x = screenWidth / 2
     menuBtn.y = popup.y + popupHeight - 100
     menuBtn.eventMode = 'static'
     menuBtn.cursor = 'pointer'
-    menuBtn.on('pointerdown', onMenu)
+    menuBtn.on('pointerdown', () => {
+      document.body.style.cursor = 'url(./assets/icons/cursor.png), auto'
+      onMenu()
+    })
     this.addChild(menuBtn)
   }
 }

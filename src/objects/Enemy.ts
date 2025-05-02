@@ -44,8 +44,8 @@ export class Enemy extends Container {
   }
 
   private async loadAnimations(direction: 'left' | 'right', isSuper: boolean) {
-    const flySheet = await Assets.load('/assets/sprites/chiken-fly.json')
-    const dieSheet = await Assets.load('/assets/sprites/chiken-die.json')
+    const flySheet = await Assets.load('./assets/sprites/chiken-fly.json')
+    const dieSheet = await Assets.load('./assets/sprites/chiken-die.json')
 
     const flyTextures = Object.values(flySheet.textures).filter(
       (t): t is Texture => t instanceof Texture

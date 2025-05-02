@@ -1,6 +1,7 @@
 import { autoDetectRenderer, Container, Ticker, Renderer } from 'pixi.js'
 import { SceneManager } from './SceneManager'
 import { MainMenu } from '../scenes/MainMenu'
+import { LoadingScene } from '../scenes/LoadingScene'
 
 export class Game {
   private renderer!: Renderer
@@ -45,7 +46,11 @@ export class Game {
     this.ticker.start()
 
     SceneManager.init(this.stage)
-    SceneManager.changeScene(new MainMenu())
+    SceneManager.changeScene(
+      new LoadingScene(() => {
+        SceneManager.changeScene(new MainMenu())
+      })
+    )
   }
   public get app() {
     return {

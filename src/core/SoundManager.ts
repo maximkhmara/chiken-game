@@ -5,15 +5,23 @@ export class SoundManager {
   private static isMuted = false
 
   static async init() {
-    sound.add('background', '/assets/sounds/background.ogg')
-    sound.add('gun', '/assets/sounds/gunblast.ogg')
-    sound.add('chick_hit', '/assets/sounds/chick_hit1.ogg')
-    sound.add('chick_hit2', '/assets/sounds/chick_hit2.ogg')
-    sound.add('start', '/assets/sounds/start-level.ogg')
-    sound.add('button', '/assets/sounds/button.ogg')
-    sound.add('game_win', '/assets/sounds/game_win.ogg')
-    sound.add('game_lose', '/assets/sounds/game_lose.ogg')
-    sound.add('boost-time', '/assets/sounds/boost-time.mp3')
+    const sounds = {
+      background: './assets/sounds/background.ogg',
+      gun: './assets/sounds/gunblast.ogg',
+      chick_hit: './assets/sounds/chick_hit1.ogg',
+      chick_hit2: './assets/sounds/chick_hit2.ogg',
+      start: './assets/sounds/start-level.ogg',
+      button: './assets/sounds/button.ogg',
+      game_win: './assets/sounds/game_win.ogg',
+      game_lose: './assets/sounds/game_lose.ogg',
+      'boost-time': './assets/sounds/boost-time.mp3'
+    }
+
+    for (const [alias, path] of Object.entries(sounds)) {
+      if (!sound.exists(alias)) {
+        sound.add(alias, path)
+      }
+    }
 
     // Очікуємо взаємодії користувача, щоб дозволити запуск звуку
     const unlockAudio = () => {

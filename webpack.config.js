@@ -2,13 +2,16 @@ const isProduction = process.env.NODE_ENV === 'production'
 // webpack.config.js
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-  mode: 'development',
+  mode: isProduction ? 'production' : 'development',
   entry: './src/index.ts',
   devtool: 'inline-source-map',
   output: {
     filename: 'bundle.js',
+    chunkFilename: '[name].[contenthash].js', // вже не важливо, бо нижче maxChunks: 1
     path: path.resolve(__dirname, 'dist'),
     clean: true,
     publicPath: isProduction ? './' : '/'
@@ -44,7 +47,14 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      inject: 'body'
+      inject: 'body',
+      publicPath: isProduction ? './' : '/'
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
+    }),
+    new CopyPlugin({
+      patterns: [{ from: 'public/assets', to: 'assets' }]
     })
   ]
 }
