@@ -1,3 +1,4 @@
+const isProduction = process.env.NODE_ENV === 'production'
 // webpack.config.js
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -10,7 +11,7 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
-    publicPath: '/'
+    publicPath: isProduction ? './' : '/'
   },
   devServer: {
     static: {
@@ -26,6 +27,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js']
+  },
+  optimization: {
+    splitChunks: false,
+    runtimeChunk: false
   },
   module: {
     rules: [
