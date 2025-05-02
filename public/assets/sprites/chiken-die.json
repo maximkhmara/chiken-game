@@ -1,0 +1,79 @@
+{"frames": {
+
+"chiken-die-0.png":
+{
+	"frame": {"x":0,"y":0,"w":105,"h":119},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":105,"h":119},
+	"sourceSize": {"w":105,"h":119}
+},
+"chiken-die-1.png":
+{
+	"frame": {"x":105,"y":0,"w":100,"h":106},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":106},
+	"sourceSize": {"w":100,"h":106}
+},
+"chiken-die-2.png":
+{
+	"frame": {"x":205,"y":0,"w":100,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":115},
+	"sourceSize": {"w":100,"h":115}
+},
+"chiken-die-3.png":
+{
+	"frame": {"x":305,"y":0,"w":121,"h":87},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":121,"h":87},
+	"sourceSize": {"w":121,"h":87}
+},
+"chiken-die-4.png":
+{
+	"frame": {"x":426,"y":0,"w":101,"h":87},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":101,"h":87},
+	"sourceSize": {"w":101,"h":87}
+},
+"chiken-die-5.png":
+{
+	"frame": {"x":527,"y":0,"w":82,"h":110},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":82,"h":110},
+	"sourceSize": {"w":82,"h":110}
+},
+"chiken-die-6.png":
+{
+	"frame": {"x":609,"y":0,"w":78,"h":116},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":78,"h":116},
+	"sourceSize": {"w":78,"h":116}
+},
+"chiken-die-7.png":
+{
+	"frame": {"x":687,"y":0,"w":75,"h":119},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":75,"h":119},
+	"sourceSize": {"w":75,"h":119}
+}},
+"animations": {
+	"chiken-die": ["chiken-die-0.png","chiken-die-1.png","chiken-die-2.png","chiken-die-3.png","chiken-die-4.png","chiken-die-5.png","chiken-die-6.png","chiken-die-7.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "chiken-die.png",
+	"format": "RGBA8888",
+	"size": {"w":762,"h":119},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4e577a3774819f07c472838f428f00ad:fa0b21bcc0881aac997a88fed023e008:3bc36423b602fcf34d1bb4c41ab4ca35$"
+}
+}
