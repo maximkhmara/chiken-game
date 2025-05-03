@@ -1,4 +1,3 @@
-// src/scenes/GameScene.ts
 import { Assets, Container, Sprite, Ticker, Text } from 'pixi.js'
 import { Enemy } from '../objects/Enemy'
 import { EnemySpawner } from '../objects/EnemySpawner'

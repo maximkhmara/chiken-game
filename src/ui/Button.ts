@@ -12,20 +12,17 @@ export class Button extends Container {
       this.sprite = new Sprite(texture)
       this.sprite.anchor.set(0.5)
 
-      // 📍 Початкове зміщення та розмір
       this.sprite.y += 150
       this.sprite.scale.set(this.originalScale)
 
       this.addChild(this.sprite)
 
-      // 🔘 Події
       this.eventMode = 'static'
       this.cursor = 'pointer'
       this.on('pointerdown', onClick)
       this.on('pointerover', () => (this.isHovered = true))
       this.on('pointerout', () => (this.isHovered = false))
 
-      // 🔁 Анімація "відскоку"
       Ticker.shared.add(this.animate, this)
     })
 
@@ -41,7 +38,6 @@ export class Button extends Container {
       : this.originalScale
     const currentScale = this.sprite.scale.x
 
-    // Плавне масштабування
     const lerped = currentScale + (targetScale - currentScale) * 0.2
     this.sprite.scale.set(lerped)
   }

@@ -19,13 +19,11 @@ export class Game {
       backgroundColor: 0x000000
     })
 
-    // 🎯 Розтягуємо рендер на всю ширину та висоту екрана
     this.renderer.resize(window.innerWidth, window.innerHeight)
     window.addEventListener('resize', () => {
       this.renderer.resize(window.innerWidth, window.innerHeight)
     })
 
-    // 🎨 Стилі для canvas
     canvas.style.position = 'absolute'
     canvas.style.top = '0'
     canvas.style.left = '0'

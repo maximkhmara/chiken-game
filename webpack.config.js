@@ -1,5 +1,4 @@
 const isProduction = process.env.NODE_ENV === 'production'
-// webpack.config.js
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
@@ -11,7 +10,7 @@ module.exports = {
   devtool: 'inline-source-map',
   output: {
     filename: 'bundle.js',
-    chunkFilename: '[name].[contenthash].js', // вже не важливо, бо нижче maxChunks: 1
+    chunkFilename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
     publicPath: isProduction ? './' : '/'

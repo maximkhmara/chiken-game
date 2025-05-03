@@ -1,4 +1,3 @@
-// src/scenes/MainMenu.ts
 import { Assets, Container, Sprite } from 'pixi.js'
 import { SceneManager } from '../core/SceneManager'
 import { GameScene } from './GameScene'
@@ -23,7 +22,6 @@ export class MainMenu extends Container {
     this.background.anchor.set(0.5)
     this.addChild(this.background)
 
-    // Обов'язково ініціалізуємо звуки
     await SoundManager.init()
 
     this.startButton = new Button('Start Game', 0, 0, () => {

@@ -1,4 +1,3 @@
-// src/ui/LevelEndPopup.ts
 import { Container, Graphics, Sprite, Text, Assets } from 'pixi.js'
 
 export class LevelEndPopup extends Container {
@@ -21,7 +20,6 @@ export class LevelEndPopup extends Container {
       onMenu,
       levelId
     )
-    // Ensure the cursor is set to default when popup opens
     document.body.style.cursor = 'default'
   }
 

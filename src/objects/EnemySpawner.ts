@@ -59,7 +59,6 @@ export class EnemySpawner {
       enemy.once('pointerdown', onEnemyKilled)
       enemy.on('killed', () => {
         if (this.scene.isPaused) return
-        // prevent duplicate score
       })
 
       this.scene.enemies.push(enemy)

@@ -1,4 +1,3 @@
-// src/core/SoundManager.ts
 import { sound } from '@pixi/sound'
 
 export class SoundManager {
@@ -23,7 +22,6 @@ export class SoundManager {
       }
     }
 
-    // Очікуємо взаємодії користувача, щоб дозволити запуск звуку
     const unlockAudio = () => {
       const context = sound.context.audioContext
       if (context.state === 'suspended') {
@@ -34,7 +32,6 @@ export class SoundManager {
 
     window.addEventListener('pointerdown', unlockAudio)
 
-    // Запуск фонової музики
     sound.play('background', { loop: true, volume: 0.2 })
   }
 

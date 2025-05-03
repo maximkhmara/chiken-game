@@ -68,11 +68,8 @@ export class LoadingScene extends Container {
 
   private async loadAssets(onLoaded: () => void) {
     const assets = [
-      // backgrounds
       './assets/backgrounds/background.jpg',
       './assets/backgrounds/menu-background.jpg',
-
-      // buttons
       './assets/buttons/booster-off.png',
       './assets/buttons/booster-on.png',
       './assets/buttons/menu-btn.png',
@@ -83,8 +80,6 @@ export class LoadingScene extends Container {
       './assets/buttons/sound-off.png',
       './assets/buttons/sound-on.png',
       './assets/buttons/start-btn.png',
-
-      // icons
       './assets/icons/0stars.png',
       './assets/icons/1stars.png',
       './assets/icons/2stars.png',
@@ -92,8 +87,6 @@ export class LoadingScene extends Container {
       './assets/icons/cartridge.png',
       './assets/icons/cursor.png',
       './assets/icons/star.png',
-
-      // sounds
       './assets/sounds/background.ogg',
       './assets/sounds/boost-time.mp3',
       './assets/sounds/button.ogg',
@@ -105,8 +98,6 @@ export class LoadingScene extends Container {
       './assets/sounds/gun_reload.ogg',
       './assets/sounds/gunblast.ogg',
       './assets/sounds/start-level.ogg',
-
-      // sprites
       './assets/sprites/chiken-die.json',
       './assets/sprites/chiken-die.png',
       './assets/sprites/chiken-fly.json',
@@ -122,7 +113,6 @@ export class LoadingScene extends Container {
       const progress = loaded / total
       this.updateProgress(progress)
     }
-    // Автозапуск фонової музики після завантаження ресурсів
     try {
       const backgroundSound = await Assets.load(
         './assets/sounds/background.ogg'

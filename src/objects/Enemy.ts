@@ -1,4 +1,3 @@
-// src/objects/Enemy.ts
 import { AnimatedSprite, Assets, Container, Texture } from 'pixi.js'
 import { SoundManager } from '../core/SoundManager'
 

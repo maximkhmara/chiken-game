@@ -1,5 +1,3 @@
-// src/utils/LevelEndHandler.ts
-
 import { LevelEndPopup } from '../ui/LevelEndPopup'
 import { SceneManager } from '../core/SceneManager'
 import { GameScene } from '../scenes/GameScene'

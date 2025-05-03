@@ -1,5 +1,3 @@
-// src/ui/CursorManager.ts
-
 import { Assets, Sprite } from 'pixi.js'
 import { GameScene } from '../scenes/GameScene'
 

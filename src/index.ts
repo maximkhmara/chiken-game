@@ -1,4 +1,3 @@
-// src/index.ts
 import { Game } from './core/Game'
 
 window.addEventListener('DOMContentLoaded', async () => {

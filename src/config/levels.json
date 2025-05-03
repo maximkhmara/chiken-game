@@ -8,7 +8,7 @@
       "waveEnemyCount": 1.5,
       "speedRange": [1.15, 2.15],
       "stars": {
-        "20": 270,
+        "20": 260,
         "40": 680,
         "60": 9999
       }
@@ -31,10 +31,10 @@
       "duration": 60,
       "spawnInterval": 36,
       "spawnPositions": [80, 150, 220, 300, 380, 460, 540, 620],
-      "waveEnemyCount": 1.8,
+      "waveEnemyCount": 1.6,
       "speedRange": [1.3, 2.4],
       "stars": {
-        "20": 380,
+        "20": 360,
         "40": 800,
         "60": 9999
       }
