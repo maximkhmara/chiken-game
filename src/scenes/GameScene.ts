@@ -1,47 +1,65 @@
 // src/scenes/GameScene.ts
-import { Assets, Container, Sprite, Ticker, Text, Graphics } from 'pixi.js'
+import { Assets, Container, Sprite, Ticker, Text } from 'pixi.js'
 import { Enemy } from '../objects/Enemy'
-import { LevelEndPopup } from '../ui/LevelEndPopup'
-import { SceneManager } from '../core/SceneManager'
-import { MainMenu } from './MainMenu'
+import { EnemySpawner } from '../objects/EnemySpawner'
 import { SoundManager } from '../core/SoundManager'
 import levelConfig from '../config/levels.json'
+import { ControlBtns } from '../ui/ControlBtns'
+import { CursorManager } from '../ui/CursorManager'
+import { StarsCalculator } from '../utils/StarsCalculator'
+import { LevelEndHandler } from '../utils/LevelEndHandler'
 
 export class GameScene extends Container {
-  private background!: Sprite
-  private enemies: Enemy[] = []
+  public background!: Sprite
+  public enemies: Enemy[] = []
   private enemyTimer = 0
 
   private timerText!: Text
-  private killsText!: Text
+  public killsText!: Text
   private levelText!: Text
-  private timeLeft = 60
-  private killCount = 0
+  public timeLeft = 60
+  public killCount = 0
   private elapsedTime = 0
 
-  private customCursor!: Sprite
+  private cursorManager!: CursorManager
+  public customCursor!: Sprite
   private currentLevelIndex = 0
-  private currentLevel = levelConfig.levels[0]
-  private pauseButton!: Sprite
-  private playButton!: Sprite
-  private pauseText!: Text
-  private isPaused = false
-  private soundButton!: Sprite
-  private isSoundOn = true
-  private superEnemyCount = 0
-  private boosterButton!: Sprite
-  private boosterUsed = false
+  public currentLevel = levelConfig.levels[0]
+  public pauseButton!: Sprite
+  public playButton!: Sprite
+  public pauseText!: Text
+  public isPaused = false
+  public soundButton!: Sprite
+  public isSoundOn = true
+  public superEnemyCount = 0
+  public boosterButton!: Sprite
+  public boosterUsed = false
+  private enemySpawner!: EnemySpawner
+  private controlBtns!: ControlBtns
 
   constructor(levelIndex = 0) {
     super()
     this.currentLevelIndex = levelIndex
-    this.currentLevel = levelConfig.levels[levelIndex]
+    const level = levelConfig.levels[levelIndex]
+    this.currentLevel = {
+      ...level,
+      speedRange: [level.speedRange[0], level.speedRange[1]] as [number, number]
+    }
+    this.enemySpawner = new EnemySpawner(this)
     this.init()
     SoundManager.play('start')
     Ticker.shared.add(this.update, this)
   }
 
   private async init() {
+    await this.initBackground()
+    await this.initUI()
+    await this.initControls()
+    this.resize()
+    window.addEventListener('resize', this.resize.bind(this))
+  }
+
+  private async initBackground() {
     const texture = await Assets.load('./assets/backgrounds/background.jpg')
     this.background = new Sprite(texture)
     this.background.anchor.set(0.5)
@@ -51,7 +69,9 @@ export class GameScene extends Container {
       if (!this.isPaused) SoundManager.play('gun')
     })
     this.addChild(this.background)
+  }
 
+  private async initUI() {
     this.timeLeft = this.currentLevel.duration
     this.killCount = 0
     this.enemyTimer = 0
@@ -74,13 +94,17 @@ export class GameScene extends Container {
     )
     this.addChild(this.timerText, this.killsText, this.levelText)
 
-    await this.initCursor()
-    await this.initPauseControls()
-    this.resize()
-    window.addEventListener('resize', this.resize.bind(this))
+    this.cursorManager = new CursorManager(this)
+    await this.cursorManager.init()
+    document.body.style.cursor = 'default'
   }
 
-  private createText(
+  private async initControls() {
+    this.controlBtns = new ControlBtns(this)
+    await this.controlBtns.init()
+  }
+
+  public createText(
     value: string,
     x: number,
     y: number,
@@ -109,130 +133,7 @@ export class GameScene extends Container {
     return text
   }
 
-  private async initCursor() {
-    const cursorTexture = await Assets.load('./assets/icons/cursor.png')
-    this.customCursor = new Sprite(cursorTexture)
-    this.customCursor.anchor.set(0.5)
-    this.customCursor.scale.set(0.5)
-    this.customCursor.zIndex = 1000
-    this.addChild(this.customCursor)
-
-    document.body.style.cursor = 'none'
-    window.addEventListener('mousemove', (e) =>
-      this.customCursor.position.set(e.clientX, e.clientY)
-    )
-  }
-
-  private async initPauseControls() {
-    const pauseTexture = await Assets.load('./assets/buttons/pause-btn.png')
-    this.pauseButton = new Sprite(pauseTexture)
-    this.pauseButton.anchor.set(0.5)
-    this.pauseButton.scale.set(0.5)
-    this.pauseButton.x = 50
-    this.pauseButton.y = window.innerHeight - 50
-    this.pauseButton.eventMode = 'static'
-    this.pauseButton.cursor = 'pointer'
-    this.pauseButton.on('pointerdown', () => {
-      SoundManager.play('button')
-      this.setPaused(true)
-    })
-    // Add pause button hover effect
-    this.pauseButton.on('pointerover', () => {
-      this.pauseButton.scale.set(0.55)
-    })
-    this.pauseButton.on('pointerout', () => {
-      this.pauseButton.scale.set(0.5)
-    })
-    this.addChild(this.pauseButton)
-
-    const playTexture = await Assets.load('./assets/buttons/play-btn.png')
-    this.playButton = new Sprite(playTexture)
-    this.playButton.anchor.set(0.5)
-    this.playButton.scale.set(0.5)
-    this.playButton.x = 50
-    this.playButton.y = window.innerHeight - 50
-    this.playButton.eventMode = 'static'
-    this.playButton.cursor = 'pointer'
-    this.playButton.visible = false
-    this.playButton.on('pointerdown', () => {
-      SoundManager.play('button')
-      this.setPaused(false)
-    })
-    this.addChild(this.playButton)
-
-    const soundOnTexture = await Assets.load('./assets/buttons/sound-on.png')
-    const soundOffTexture = await Assets.load('./assets/buttons/sound-off.png')
-
-    this.soundButton = new Sprite(soundOnTexture)
-    this.soundButton.anchor.set(0.5)
-    this.soundButton.scale.set(0.5)
-    this.soundButton.x =
-      this.pauseButton.x +
-      this.pauseButton.width * this.pauseButton.scale.x +
-      45
-    this.soundButton.y = this.pauseButton.y
-    this.soundButton.eventMode = 'static'
-    this.soundButton.cursor = 'pointer'
-    this.soundButton.on('pointerdown', () => {
-      this.isSoundOn = !this.isSoundOn
-      SoundManager.setMute(!this.isSoundOn)
-      this.soundButton.texture = this.isSoundOn
-        ? soundOnTexture
-        : soundOffTexture
-    })
-    // Add sound button hover effect
-    this.soundButton.on('pointerover', () => {
-      this.soundButton.scale.set(0.55)
-    })
-    this.soundButton.on('pointerout', () => {
-      this.soundButton.scale.set(0.5)
-    })
-    this.addChild(this.soundButton)
-
-    this.pauseText = this.createText(
-      'PAUSE',
-      window.innerWidth / 2,
-      window.innerHeight / 2
-    )
-    this.pauseText.anchor.set(0.5)
-    this.pauseText.visible = false
-    this.addChild(this.pauseText)
-
-    const boosterOnTexture = await Assets.load(
-      './assets/buttons/booster-on.png'
-    )
-    const boosterOffTexture = await Assets.load(
-      './assets/buttons/booster-off.png'
-    )
-
-    this.boosterButton = new Sprite(boosterOnTexture)
-    this.boosterButton.anchor.set(0.5)
-    this.boosterButton.scale.set(0.5)
-    this.boosterButton.x =
-      this.soundButton.x +
-      this.soundButton.width * this.soundButton.scale.x +
-      45
-    this.boosterButton.y = this.pauseButton.y
-    this.boosterButton.eventMode = 'static'
-    this.boosterButton.cursor = 'pointer'
-    this.boosterButton.on('pointerdown', () => {
-      if (!this.boosterUsed) {
-        this.timeLeft += 20
-        this.boosterUsed = true
-        this.boosterButton.texture = boosterOffTexture
-        SoundManager.play('boost-time')
-      }
-    })
-    this.boosterButton.on('pointerover', () => {
-      if (!this.boosterUsed) this.boosterButton.scale.set(0.55)
-    })
-    this.boosterButton.on('pointerout', () => {
-      this.boosterButton.scale.set(0.5)
-    })
-    this.addChild(this.boosterButton)
-  }
-
-  private setPaused(paused: boolean) {
+  public setPaused(paused: boolean) {
     this.isPaused = paused
     this.pauseText.visible = paused
     this.pauseButton.visible = !paused
@@ -256,68 +157,20 @@ export class GameScene extends Container {
     this.levelText.x = window.innerWidth / 2
   }
 
-  private spawnEnemy() {
-    const { spawnPositions, waveEnemyCount, speedRange } = this.currentLevel
-    const isFirstLevel = this.currentLevel.id === 1
-    const maxSpawns = isFirstLevel
-      ? Math.ceil(waveEnemyCount * 0.5)
-      : waveEnemyCount
-    for (let i = 0; i < maxSpawns; i++) {
-      const progress =
-        (this.currentLevel.duration - this.timeLeft) /
-        this.currentLevel.duration
-      const isSuper =
-        Math.random() < 0.1 + 0.15 * progress && this.superEnemyCount < 15
-      let speed =
-        Math.random() * (speedRange[1] - speedRange[0]) + speedRange[0]
-      if (isSuper) {
-        this.superEnemyCount++
-        speed *= 1.5
-      }
-      const y = isSuper
-        ? spawnPositions[
-            Math.floor(Math.random() * Math.ceil(spawnPositions.length / 2))
-          ]
-        : spawnPositions[Math.floor(Math.random() * spawnPositions.length)]
-      const direction = Math.random() < 0.5 ? 'left' : 'right'
-      const x = direction === 'left' ? -100 : window.innerWidth + 100
-
-      const enemy = new Enemy(x, y, isSuper)
-      enemy.setGameScene(this)
-      enemy.setSpeed(direction === 'left' ? speed : -speed)
-
-      if (isSuper) {
-        enemy.tint = 0xffcc00
-        enemy.scale.set(0.6)
-      }
-
-      const scoreValue = isSuper ? 25 : 10
-      const onEnemyKilled = () => {
-        if (this.isPaused) return
-        this.killCount += scoreValue
-        if (this.killsText) {
-          this.killsText.text = `Score: ${this.killCount}`
-        }
-        this.showFloatingText(`+${scoreValue}`, enemy.x, enemy.y)
-      }
-      enemy.once('pointerdown', onEnemyKilled)
-      enemy.on('killed', () => {
-        if (this.isPaused) return
-        // prevent duplicate score
-      })
-
-      this.enemies.push(enemy)
-      this.addChild(enemy)
-    }
-  }
-
   private update(ticker: Ticker) {
     if (this.isPaused) return
 
     const delta = ticker.deltaMS / 16.66
-    this.enemyTimer += delta
-    this.elapsedTime += delta / 60
 
+    const levelEnded = this.handleTimer(delta)
+    if (levelEnded) return
+
+    this.handleEnemySpawn(delta)
+    this.updateEnemies()
+  }
+
+  private handleTimer(delta: number): boolean {
+    this.elapsedTime += delta / 60
     if (this.elapsedTime >= 1) {
       this.timeLeft--
       this.elapsedTime = 0
@@ -325,26 +178,31 @@ export class GameScene extends Container {
 
       const stars = this.currentLevel.stars
       const timeElapsed = this.currentLevel.duration - this.timeLeft
-      if (
+      const enoughKillsEarly =
         (timeElapsed <= 20 && this.killCount >= stars['20']) ||
-        (timeElapsed > 20 &&
-          timeElapsed <= 40 &&
-          this.killCount >= stars['40']) ||
-        timeElapsed >= 60
-      ) {
+        (timeElapsed > 20 && timeElapsed <= 40 && this.killCount >= stars['40'])
+      const timeIsUp = timeElapsed >= 60
+
+      if (enoughKillsEarly || timeIsUp) {
         Ticker.shared.remove(this.update, this)
         this.showLevelEnd()
-        return
+        return true
       }
     }
+    return false
+  }
 
+  private handleEnemySpawn(delta: number) {
+    this.enemyTimer += delta
     const spawnRate =
       this.currentLevel.spawnInterval / this.currentLevel.waveEnemyCount
     if (this.enemyTimer > spawnRate) {
-      this.spawnEnemy()
+      this.enemySpawner.spawnEnemy()
       this.enemyTimer = 0
     }
+  }
 
+  private updateEnemies() {
     if (!this.isPaused) {
       this.enemies.forEach((enemy) => enemy.update())
     }
@@ -362,40 +220,25 @@ export class GameScene extends Container {
   }
 
   private showLevelEnd() {
-    let starsImage = './assets/icons/0stars.png'
     const stars = this.getStars()
-    // Play appropriate sound before showing popup
-    if (stars > 0) {
-      SoundManager.play('game_win')
-    } else {
-      SoundManager.play('game_lose')
-    }
-    if (stars === 1) starsImage = './assets/icons/1stars.png'
-    else if (stars === 2) starsImage = './assets/icons/2stars.png'
-    else if (stars === 3) starsImage = './assets/icons/3stars.png'
-    this.addChild(
-      new LevelEndPopup(
-        this.killCount,
-        starsImage,
-        this.currentLevelIndex === levelConfig.levels.length - 1,
-        () =>
-          SceneManager.changeScene(new GameScene(this.currentLevelIndex + 1)),
-        () => SceneManager.changeScene(new GameScene(this.currentLevelIndex)),
-        () => SceneManager.changeScene(new MainMenu()),
-        this.currentLevel.id
-      )
-    )
+    LevelEndHandler.handle({
+      scene: this,
+      killCount: this.killCount,
+      currentLevelIndex: this.currentLevelIndex,
+      stars,
+      currentLevelId: this.currentLevel.id
+    })
   }
 
   private getStars(): number {
-    const stars = this.currentLevel.stars
-    const timeElapsed = this.currentLevel.duration - this.timeLeft
-    if (timeElapsed <= 20 && this.killCount >= stars['20']) return 3
-    if (timeElapsed <= 40 && this.killCount >= stars['40']) return 2
-    return this.killCount >= 10 ? 1 : 0
+    return StarsCalculator.calculate(
+      this.currentLevel,
+      this.timeLeft,
+      this.killCount
+    )
   }
 
-  private showFloatingText(text: string, x: number, y: number) {
+  public showFloatingText(text: string, x: number, y: number) {
     const scoreText = new Text({
       text,
       style: {
