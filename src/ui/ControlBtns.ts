@@ -100,7 +100,7 @@ export class ControlBtns {
         this.scene.timeLeft += 20
         this.scene.boosterUsed = true
         this.scene.boosterButton.texture = boosterOffTexture
-        SoundManager.play('boost-time')
+        SoundManager.play('boost_time')
       }
     })
     this.scene.boosterButton.on('pointerover', () => {

@@ -13,7 +13,7 @@ export class SoundManager {
       button: './assets/sounds/button.ogg',
       game_win: './assets/sounds/game_win.ogg',
       game_lose: './assets/sounds/game_lose.ogg',
-      'boost-time': './assets/sounds/boost-time.mp3'
+      boost_time: './assets/sounds/boost-time.mp3'
     }
 
     for (const [alias, path] of Object.entries(sounds)) {
