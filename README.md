@@ -5,7 +5,7 @@ nvm use 16.20.2
 
 npm install
 
-# або
+або
 
 yarn install
 
@@ -13,7 +13,7 @@ yarn install
 
 npm run start
 
-# або
+або
 
 yarn start
 
@@ -21,7 +21,7 @@ yarn start
 
 npm run build
 
-# або
+або
 
 yarn build
 
